@@ -1,20 +1,19 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import pandas as pd
 import tkinter as tk
-from tkinter import simpledialog, messagebox
+from tkinter import simpledialog, messagebox, Entry, Button, Label
 from PIL import Image, ImageTk
 
 # Custom colors
-BG_COLOR = "#2E3440"
-BUTTON_COLOR = "#5E81AC"
-TEXT_COLOR = "#ECEFF4"
-HIGHLIGHT_COLOR = "#88C0D0"
+BG_COLOR = "#1E1E2E"  # Dark background
+BUTTON_COLOR = "#6C5CE7"  # Purple
+TEXT_COLOR = "#FFFFFF"  # White
+HIGHLIGHT_COLOR = "#A29BFE"  # Light purple
+ACCENT_COLOR = "#FF7675"  # Red for highlights
 
-# Placeholder for diet recommendation
-def get_diet_recommendation():
-    return "For your workout routine, consider a balanced diet with proteins, carbs, and healthy fats."
-
+# Function to calculate angle between three points
 def calculate_angle(a, b, c):
     a = np.array(a)
     b = np.array(b)
@@ -28,6 +27,7 @@ def calculate_angle(a, b, c):
 
     return angle
 
+# Function to calculate calories burned
 def calculate_calories_burned(reps, weight, exercise_type):
     if exercise_type == 'curl':
         calories_per_rep = 0.25
@@ -42,6 +42,7 @@ def calculate_calories_burned(reps, weight, exercise_type):
 
     return reps * calories_per_rep * (weight / 200)
 
+# Function to start exercise counter
 def start_counter(exercise, weight):
     mp_pose = mp.solutions.pose
     mp_drawing = mp.solutions.drawing_utils
@@ -138,73 +139,722 @@ def start_counter(exercise, weight):
                         calories_burned = calculate_calories_burned(counter, weight, 'lunge')
                         print(f"Lunge count: {counter}, Calories burned: {calories_burned:.2f}")
 
-            except Exception as e:
-                print(f"Error: {e}")
+                cv2.putText(image, f'Count: {counter}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                cv2.putText(image, f'Stage: {stage}', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-            cv2.putText(image, f"{exercise.capitalize()} Counter: " + str(counter), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-            mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+                mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
-            cv2.imshow(f'{exercise.capitalize()} Counter', image)
+            except:
+                pass
 
-            if cv2.waitKey(10) & 0xFF == ord('q'):
+            cv2.imshow('Exercise Counter', image)
+
+            if cv2.waitKey(5) & 0xFF == 27:
                 break
 
     cap.release()
     cv2.destroyAllWindows()
 
-def diet_recommendation():
-    recommended_diet = get_diet_recommendation()
-    messagebox.showinfo("Diet Recommendation", recommended_diet)
+# Function for weight loss
+def Weight_Loss():
+    print(" Age : %s Years \n Weight: %s Kg \n Hight: %s m \n" % (e1.get(), e3.get(), e4.get()))
+    import pandas as pd
+    import numpy as np
+    from sklearn.cluster import KMeans
+    import tkinter as tk
+    
+    ROOT = tk.Tk()
+    
+    ROOT.withdraw()
+    
+    USER_INP = simpledialog.askstring(title="Food Timing",
+                                      prompt="Enter 1 for Breakfast, 2 for Lunch and 3 for Dinner")
+    
+    data=pd.read_csv('input.csv')
+    
+    Breakfastdata=data['Breakfast']
+    BreakfastdataNumpy=Breakfastdata.to_numpy()
+    
+    Lunchdata=data['Lunch']
+    LunchdataNumpy=Lunchdata.to_numpy()
+    
+    Dinnerdata=data['Dinner']
+    DinnerdataNumpy=Dinnerdata.to_numpy()
+    
+    Food_itemsdata=data['Food_items']
+    breakfastfoodseparated=[]
+    Lunchfoodseparated=[]
+    Dinnerfoodseparated=[]
+    
+    breakfastfoodseparatedID=[]
+    LunchfoodseparatedID=[]
+    DinnerfoodseparatedID=[]
+    
+    for i in range(len(Breakfastdata)):
+      if BreakfastdataNumpy[i]==1:
+        breakfastfoodseparated.append(Food_itemsdata[i])
+        breakfastfoodseparatedID.append(i)
+      if LunchdataNumpy[i]==1:
+        Lunchfoodseparated.append(Food_itemsdata[i])
+        LunchfoodseparatedID.append(i)
+      if DinnerdataNumpy[i]==1:
+        Dinnerfoodseparated.append(Food_itemsdata[i])
+        DinnerfoodseparatedID.append(i)
+    
+    LunchfoodseparatedIDdata = data.iloc[LunchfoodseparatedID]
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.T
+    val=list(np.arange(5,16))
+    Valapnd=[0]+[4]+val
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.iloc[Valapnd]
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.T
+    
+    breakfastfoodseparatedIDdata = data.iloc[breakfastfoodseparatedID]
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.T
+    val=list(np.arange(5,16))
+    Valapnd=[0]+[4]+val
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.iloc[Valapnd]
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.T
+    
+    DinnerfoodseparatedIDdata = data.iloc[DinnerfoodseparatedID]
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.T
+    val=list(np.arange(5,16))
+    Valapnd=[0]+[4]+val
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.iloc[Valapnd]
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.T
+    
+    age=int(e1.get())
+    weight=float(e3.get())
+    height=float(e4.get())
+    bmi = weight/(height**2) 
+    
+    for lp in range (0,80,20):
+        test_list=np.arange(lp,lp+20)
+        for i in test_list: 
+            if(i == age):
+                print('age is between',str(lp),str(lp+10))
+                agecl=round(lp/20)    
+   
+    print("Your body mass index is: ", bmi)
+    if ( bmi < 16):
+        print("severely underweight")
+        clbmi=4
+    elif ( bmi >= 16 and bmi < 18.5):
+        print("underweight")
+        clbmi=3
+    elif ( bmi >= 18.5 and bmi < 25):
+        print("Healthy")
+        clbmi=2
+    elif ( bmi >= 25 and bmi < 30):
+        print("overweight")
+        clbmi=1
+    elif ( bmi >=30):
+        print("severely overweight")
+        clbmi=0
+    
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.to_numpy()
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.to_numpy()
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.to_numpy()
+    ti=(clbmi+agecl)/2
+    
+    ## K-Means Based  Dinner Food
+    Datacalorie=DinnerfoodseparatedIDdata[1:,1:len(DinnerfoodseparatedIDdata)]
+    X = np.array(Datacalorie)
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(X)
+    XValu=np.arange(0,len(kmeans.labels_))
+    dnrlbl=kmeans.labels_
+    
+    ## K-Means Based  Lunch Food
+    Datacalorie=LunchfoodseparatedIDdata[1:,1:len(LunchfoodseparatedIDdata)]
+    X = np.array(Datacalorie)
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(X)
+    XValu=np.arange(0,len(kmeans.labels_))
+    lnchlbl=kmeans.labels_
+    
+    ## K-Means Based  Breakfast Food
+    Datacalorie=breakfastfoodseparatedIDdata[1:,1:len(breakfastfoodseparatedIDdata)]
+    X = np.array(Datacalorie)
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(X)
+    XValu=np.arange(0,len(kmeans.labels_))
+    brklbl=kmeans.labels_
+    
+    inp=[]
+    datafin=pd.read_csv('inputfin.csv')
+    
+    dataTog=datafin.T
 
-def main():
-    root = tk.Tk()
-    root.title("Exercise Detection App")
-    root.geometry("600x400")
-    root.configure(bg=BG_COLOR)
+    bmicls=[0,1,2,3,4]
+    agecls=[0,1,2,3,4]
+    
+    weightlosscat = dataTog.iloc[[1,2,7,8]]
+    weightlosscat=weightlosscat.T
+    weightgaincat= dataTog.iloc[[0,1,2,3,4,7,9,10]]
+    weightgaincat=weightgaincat.T
+    healthycat = dataTog.iloc[[1,2,3,4,6,7,9]]
+    healthycat=healthycat.T
+    weightlosscatDdata=weightlosscat.to_numpy()
+    weightgaincatDdata=weightgaincat.to_numpy()
+    healthycatDdata=healthycat.to_numpy()
+    weightlosscat=weightlosscatDdata[1:,0:len(weightlosscatDdata)]
+    weightgaincat=weightgaincatDdata[1:,0:len(weightgaincatDdata)]
+    healthycat=healthycatDdata[1:,0:len(healthycatDdata)]
+    weightlossfin=np.zeros((len(weightlosscat)*5,6),dtype=np.float32)
+    weightgainfin=np.zeros((len(weightgaincat)*5,10),dtype=np.float32)
+    healthycatfin=np.zeros((len(healthycat)*5,9),dtype=np.float32)
+    t=0
+    r=0
+    s=0
+    yt=[]
+    yr=[]
+    ys=[]
+    for zz in range(5):
+        for jj in range(len(weightlosscat)):
+            valloc=list(weightlosscat[jj])
+            valloc.append(bmicls[zz])
+            valloc.append(agecls[zz])
+            weightlossfin[t]=np.array(valloc)
+            yt.append(brklbl[jj])
+            t+=1
+            
+        for jj in range(len(weightlosscat)):
+            valloc=list(weightlosscat[jj])
+            valloc.append(bmicls[zz])
+            valloc.append(agecls[zz])
+            weightlossfin[r]=np.array(valloc)
+            yr.append(lnchlbl[jj])
+            r+=1
+            
+        for jj in range(len(weightlosscat)):
+            valloc=list(weightlosscat[jj])
+            valloc.append(bmicls[zz])
+            valloc.append(agecls[zz])
+            weightlossfin[s]=np.array(valloc)
+            ys.append(dnrlbl[jj])
+            s+=1
+            
+    X_test=np.zeros((len(weightlosscat),6),dtype=np.float32)
+    
+    for jj in range(len(weightlosscat)):
+        valloc=list(weightlosscat[jj])
+        valloc.append(agecl)
+        valloc.append(clbmi)
+        X_test[jj]=np.array(valloc)*ti
+        
+  
+    from sklearn.model_selection import train_test_split
+        
+    val=int(USER_INP)
+    
+    if val==1:
+        X_train= weightlossfin
+        y_train=yt
+        
+    elif val==2:
+        X_train= weightlossfin
+        y_train=yr 
+        
+    elif val==3:
+        X_train= weightlossfin
+        y_train=ys
+        
+    from sklearn.ensemble import RandomForestClassifier
+    
+    clf=RandomForestClassifier(n_estimators=100)
+    
+    clf.fit(X_train,y_train)
+    
+    y_pred=clf.predict(X_test)
+    
+        
+    print ('SUGGESTED FOOD ITEMS ::')
+    for ii in range(len(y_pred)):
+        if y_pred[ii]==2:
+            print (Food_itemsdata[ii])
+            
 
-    # Load and display an image (optional)
-    try:
-        img = Image.open("fitness_icon.png")  # Replace with your image path
-        img = img.resize((100, 100), Image.ANTIALIAS)
-        img = ImageTk.PhotoImage(img)
-        img_label = tk.Label(root, image=img, bg=BG_COLOR)
-        img_label.image = img
-        img_label.pack(pady=10)
-    except FileNotFoundError:
-        print("Image not found. Skipping image display.")
+# Function for weight gain
+def Weight_Gain():
+    print(" Age: %s\n Weight%s\n Hight%s\n" % (e1.get(), e3.get(), e4.get()))
+    import pandas as pd
+    import numpy as np
+    from sklearn.cluster import KMeans
+    import tkinter as tk
+    
+    ROOT = tk.Tk()
+    
+    ROOT.withdraw()
+   
+    USER_INP = simpledialog.askstring(title="Food Timing",
+                                      prompt="Enter 1 for Breakfast, 2 for Lunch and 3 for Dinner")
+    
+    data=pd.read_csv('input.csv')
+    data.head(5)
+    Breakfastdata=data['Breakfast']
+    BreakfastdataNumpy=Breakfastdata.to_numpy()
+    
+    Lunchdata=data['Lunch']
+    LunchdataNumpy=Lunchdata.to_numpy()
+    
+    Dinnerdata=data['Dinner']
+    DinnerdataNumpy=Dinnerdata.to_numpy()
+    
+    Food_itemsdata=data['Food_items']
+    breakfastfoodseparated=[]
+    Lunchfoodseparated=[]
+    Dinnerfoodseparated=[]
+    
+    breakfastfoodseparatedID=[]
+    LunchfoodseparatedID=[]
+    DinnerfoodseparatedID=[]
+    
+    for i in range(len(Breakfastdata)):
+      if BreakfastdataNumpy[i]==1:
+        breakfastfoodseparated.append(Food_itemsdata[i])
+        breakfastfoodseparatedID.append(i)
+      if LunchdataNumpy[i]==1:
+        Lunchfoodseparated.append(Food_itemsdata[i])
+        LunchfoodseparatedID.append(i)
+      if DinnerdataNumpy[i]==1:
+        Dinnerfoodseparated.append(Food_itemsdata[i])
+        DinnerfoodseparatedID.append(i)
+    
+    LunchfoodseparatedIDdata = data.iloc[LunchfoodseparatedID]
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.T
+    val=list(np.arange(5,15))
+    Valapnd=[0]+val
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.iloc[Valapnd]
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.T
+    
+    breakfastfoodseparatedIDdata = data.iloc[breakfastfoodseparatedID]
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.T
+    val=list(np.arange(5,15))
+    Valapnd=[0]+val
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.iloc[Valapnd]
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.T
+    
+    
+    DinnerfoodseparatedIDdata = data.iloc[DinnerfoodseparatedID]
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.T
+    val=list(np.arange(5,15))
+    Valapnd=[0]+val
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.iloc[Valapnd]
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.T
+    
+    age=int(e1.get())
+    weight=float(e3.get())
+    height=float(e4.get())
+    bmi = weight/(height**2) 
+    agewiseinp=0
+    
+    for lp in range (0,80,20):
+        test_list=np.arange(lp,lp+20)
+        for i in test_list: 
+            if(i == age):
+                print('age is between',str(lp),str(lp+10))
+                tr=round(lp/20)  
+                agecl=round(lp/20)    
 
-    # Title Label
-    title_label = tk.Label(root, text="Exercise Detection App", font=("Helvetica", 24, "bold"), fg=TEXT_COLOR, bg=BG_COLOR)
-    title_label.pack(pady=10)
+    print("Your body mass index is: ", bmi)
+    if ( bmi < 16):
+        print("severely underweight")
+        clbmi=4
+    elif ( bmi >= 16 and bmi < 18.5):
+        print("underweight")
+        clbmi=3
+    elif ( bmi >= 18.5 and bmi < 25):
+        print("Healthy")
+        clbmi=2
+    elif ( bmi >= 25 and bmi < 30):
+        print("overweight")
+        clbmi=1
+    elif ( bmi >=30):
+        print("severely overweight")
+        clbmi=0    
+    val1=DinnerfoodseparatedIDdata.describe()
+    valTog=val1.T
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.to_numpy()
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.to_numpy()
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.to_numpy()
+    ti=(bmi+agecl)/2
+    
+    ## K-Means Based  Dinner Food
+    Datacalorie=DinnerfoodseparatedIDdata[1:,1:len(DinnerfoodseparatedIDdata)]
+    X = np.array(Datacalorie)
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(X)
+    XValu=np.arange(0,len(kmeans.labels_))
+    dnrlbl=kmeans.labels_
+    
+    ## K-Means Based  lunch Food
+    Datacalorie=LunchfoodseparatedIDdata[1:,1:len(LunchfoodseparatedIDdata)]
+    X = np.array(Datacalorie)
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(X)
+    XValu=np.arange(0,len(kmeans.labels_))
+    lnchlbl=kmeans.labels_
+    
+    ## K-Means Based  lunch Food
+    Datacalorie=breakfastfoodseparatedIDdata[1:,1:len(breakfastfoodseparatedIDdata)]
+    X = np.array(Datacalorie)
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(X)
+    XValu=np.arange(0,len(kmeans.labels_))
+    brklbl=kmeans.labels_
+    
+    inp=[]
+    datafin=pd.read_csv('inputfin.csv')
+    datafin.head(5)
+    dataTog=datafin.T
+    bmicls=[0,1,2,3,4]
+    agecls=[0,1,2,3,4]
+    weightlosscat = dataTog.iloc[[1,2,7,8]]
+    weightlosscat=weightlosscat.T
+    weightgaincat= dataTog.iloc[[0,1,2,3,4,7,9,10]]
+    weightgaincat=weightgaincat.T
+    healthycat = dataTog.iloc[[1,2,3,4,6,7,9]]
+    healthycat=healthycat.T
+    weightlosscatDdata=weightlosscat.to_numpy()
+    weightgaincatDdata=weightgaincat.to_numpy()
+    healthycatDdata=healthycat.to_numpy()
+    weightlosscat=weightlosscatDdata[1:,0:len(weightlosscatDdata)]
+    weightgaincat=weightgaincatDdata[1:,0:len(weightgaincatDdata)]
+    healthycat=healthycatDdata[1:,0:len(healthycatDdata)]
+    
+    weightlossfin=np.zeros((len(weightlosscat)*5,6),dtype=np.float32)
+    weightgainfin=np.zeros((len(weightgaincat)*5,10),dtype=np.float32)
+    healthycatfin=np.zeros((len(healthycat)*5,9),dtype=np.float32)
+    t=0
+    r=0
+    s=0
+    yt=[]
+    yr=[]
+    ys=[]
+    for zz in range(5):
+        for jj in range(len(weightgaincat)):
+            valloc=list(weightgaincat[jj])
+            valloc.append(bmicls[zz])
+            valloc.append(agecls[zz])
+            weightgainfin[t]=np.array(valloc)
+            yt.append(brklbl[jj])
+            t+=1
+        for jj in range(len(weightgaincat)):
+            valloc=list(weightgaincat[jj])
+            valloc.append(bmicls[zz])
+            valloc.append(agecls[zz])
+            weightgainfin[r]=np.array(valloc)
+            yr.append(lnchlbl[jj])
+            r+=1
+        for jj in range(len(weightgaincat)):
+            valloc=list(weightgaincat[jj])
+            valloc.append(bmicls[zz])
+            valloc.append(agecls[zz])
+            weightgainfin[s]=np.array(valloc)
+            ys.append(dnrlbl[jj])
+            s+=1
 
-    # Weight Input
-    weight = simpledialog.askfloat("Input", "Enter your weight in kg:", minvalue=1)
+    
+    X_test=np.zeros((len(weightgaincat),10),dtype=np.float32)
 
-    # Buttons
-    button_frame = tk.Frame(root, bg=BG_COLOR)
-    button_frame.pack(pady=20)
+   
+    for jj in range(len(weightgaincat)):
+        valloc=list(weightgaincat[jj])
+        valloc.append(agecl)
+        valloc.append(clbmi)
+        X_test[jj]=np.array(valloc)*ti
+    
+    from sklearn.model_selection import train_test_split
+    
+    val=int(USER_INP)
+    
+    if val==1:
+        X_train= weightgainfin
+        y_train=yt
+        
+    elif val==2:
+        X_train= weightgainfin
+        y_train=yr 
+        
+    elif val==3:
+        X_train= weightgainfin
+        y_train=ys
+    
+   
+    from sklearn.model_selection import train_test_split
+    
+    
+    from sklearn.ensemble import RandomForestClassifier
+    
+    clf=RandomForestClassifier(n_estimators=100)
+    
+    clf.fit(X_train,y_train)
+    
+    y_pred=clf.predict(X_test)
 
-    start_curl_button = tk.Button(button_frame, text="Start Bicep Curl Counter", font=("Helvetica", 12), bg=BUTTON_COLOR, fg=TEXT_COLOR, command=lambda: start_counter('curl', weight))
-    start_curl_button.grid(row=0, column=0, padx=10, pady=10)
+    
+    
+    print ('SUGGESTED FOOD ITEMS ::')
+    for ii in range(len(y_pred)):
+        if y_pred[ii]==2:
+            print (Food_itemsdata[ii])
 
-    start_sit_up_button = tk.Button(button_frame, text="Start Sit-Up Counter", font=("Helvetica", 12), bg=BUTTON_COLOR, fg=TEXT_COLOR, command=lambda: start_counter('situp', weight))
-    start_sit_up_button.grid(row=0, column=1, padx=10, pady=10)
+# Function for healthy
+def Healthy():
+    print(" Age: %s\n Weight%s\n Hight%s\n" % (e1.get(), e3.get(), e4.get()))
+    import pandas as pd
+    import numpy as np
+    
+    from sklearn.cluster import KMeans
+    import tkinter as tk
+    
+    ROOT = tk.Tk()
+    
+    ROOT.withdraw()
+   
+    USER_INP = simpledialog.askstring(title="Food Timing",
+                                      prompt="Enter 1 for Breakfast, 2 for Lunch and 3 for Dinner")
+    
+    
+    data=pd.read_csv('input.csv')
+    data.head(5)
+    Breakfastdata=data['Breakfast']
+    BreakfastdataNumpy=Breakfastdata.to_numpy()
+    
+    Lunchdata=data['Lunch']
+    LunchdataNumpy=Lunchdata.to_numpy()
+    
+    Dinnerdata=data['Dinner']
+    DinnerdataNumpy=Dinnerdata.to_numpy()
+    
+    Food_itemsdata=data['Food_items']
+    breakfastfoodseparated=[]
+    Lunchfoodseparated=[]
+    Dinnerfoodseparated=[]
+    
+    breakfastfoodseparatedID=[]
+    LunchfoodseparatedID=[]
+    DinnerfoodseparatedID=[]
+    
+    for i in range(len(Breakfastdata)):
+      if BreakfastdataNumpy[i]==1:
+        breakfastfoodseparated.append(Food_itemsdata[i])
+        breakfastfoodseparatedID.append(i)
+      if LunchdataNumpy[i]==1:
+        Lunchfoodseparated.append(Food_itemsdata[i])
+        LunchfoodseparatedID.append(i)
+      if DinnerdataNumpy[i]==1:
+        Dinnerfoodseparated.append(Food_itemsdata[i])
+        DinnerfoodseparatedID.append(i)
+    
+    LunchfoodseparatedIDdata = data.iloc[LunchfoodseparatedID]
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.T
+    val=list(np.arange(5,15))
+    Valapnd=[0]+val
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.iloc[Valapnd]
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.T
+    
+    breakfastfoodseparatedIDdata = data.iloc[breakfastfoodseparatedID]
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.T
+    val=list(np.arange(5,15))
+    Valapnd=[0]+val
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.iloc[Valapnd]
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.T
+    
+    DinnerfoodseparatedIDdata = data.iloc[DinnerfoodseparatedID]
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.T
+    val=list(np.arange(5,15))
+    Valapnd=[0]+val
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.iloc[Valapnd]
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.T
+    
+    age=int(e1.get())
+    weight=float(e3.get())
+    height=float(e4.get())
+    bmi = weight/(height**2) 
+    agewiseinp=0
+    
+    for lp in range (0,80,20):
+        test_list=np.arange(lp,lp+20)
+        for i in test_list: 
+            if(i == age):
+                print('age is between',str(lp),str(lp+10))
+                tr=round(lp/20)  
+                agecl=round(lp/20)    
+    
+    print("Your body mass index is: ", bmi)
+    if ( bmi < 16):
+        print("severely underweight")
+        clbmi=4
+    elif ( bmi >= 16 and bmi < 18.5):
+        print("underweight")
+        clbmi=3
+    elif ( bmi >= 18.5 and bmi < 25):
+        print("Healthy")
+        clbmi=2
+    elif ( bmi >= 25 and bmi < 30):
+        print ("overweight")
+        clbmi=1
+    elif ( bmi >=30):
+        print("severely overweight")
+        clbmi=0    
+    val1=DinnerfoodseparatedIDdata.describe()
+    valTog=val1.T
+    DinnerfoodseparatedIDdata=DinnerfoodseparatedIDdata.to_numpy()
+    LunchfoodseparatedIDdata=LunchfoodseparatedIDdata.to_numpy()
+    breakfastfoodseparatedIDdata=breakfastfoodseparatedIDdata.to_numpy()
+    ti=(bmi+agecl)/2
+    
+    ## K-Means Based  Dinner Food
+    Datacalorie=DinnerfoodseparatedIDdata[1:,1:len(DinnerfoodseparatedIDdata)]
+    X = np.array(Datacalorie)
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(X)
+    XValu=np.arange(0,len(kmeans.labels_))
+    dnrlbl=kmeans.labels_
+    
+    ## K-Means Based  lunch Food
+    Datacalorie=LunchfoodseparatedIDdata[1:,1:len(LunchfoodseparatedIDdata)]
+    X = np.array(Datacalorie)
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(X)
+    XValu=np.arange(0,len(kmeans.labels_))
+    lnchlbl=kmeans.labels_
+    
+    ## K-Means Based  lunch Food
+    Datacalorie=breakfastfoodseparatedIDdata[1:,1:len(breakfastfoodseparatedIDdata)]
+    X = np.array(Datacalorie)
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(X)
+    XValu=np.arange(0,len(kmeans.labels_))
+    brklbl=kmeans.labels_
+    inp=[]
+    datafin=pd.read_csv('inputfin.csv')
+    datafin.head(5)
+    dataTog=datafin.T
+    bmicls=[0,1,2,3,4]
+    agecls=[0,1,2,3,4]
+    weightlosscat = dataTog.iloc[[1,2,7,8]]
+    weightlosscat=weightlosscat.T
+    weightgaincat= dataTog.iloc[[0,1,2,3,4,7,9,10]]
+    weightgaincat=weightgaincat.T
+    healthycat = dataTog.iloc[[1,2,3,4,6,7,9]]
+    healthycat=healthycat.T
+    weightlosscatDdata=weightlosscat.to_numpy()
+    weightgaincatDdata=weightgaincat.to_numpy()
+    healthycatDdata=healthycat.to_numpy()
+    weightlosscat=weightlosscatDdata[1:,0:len(weightlosscatDdata)]
+    weightgaincat=weightgaincatDdata[1:,0:len(weightgaincatDdata)]
+    healthycat=healthycatDdata[1:,0:len(healthycatDdata)]
+    
+    weightlossfin=np.zeros((len(weightlosscat)*5,6),dtype=np.float32)
+    weightgainfin=np.zeros((len(weightgaincat)*5,10),dtype=np.float32)
+    healthycatfin=np.zeros((len(healthycat)*5,9),dtype=np.float32)
+    t=0
+    r=0
+    s=0
+    yt=[]
+    yr=[]
+    ys=[]
+    for zz in range(5):
+        for jj in range(len(healthycat)):
+            valloc=list(healthycat[jj])
+            valloc.append(bmicls[zz])
+            valloc.append(agecls[zz])
+            healthycatfin[t]=np.array(valloc)
+            yt.append(brklbl[jj])
+            t+=1
+        for jj in range(len(healthycat)):
+            valloc=list(healthycat[jj])
+            valloc.append(bmicls[zz])
+            valloc.append(agecls[zz])
+            healthycatfin[r]=np.array(valloc)
+            yr.append(lnchlbl[jj])
+            r+=1
+        for jj in range(len(healthycat)):
+            valloc=list(healthycat[jj])
+            valloc.append(bmicls[zz])
+            valloc.append(agecls[zz])
+            healthycatfin[s]=np.array(valloc)
+            ys.append(dnrlbl[jj])
+            s+=1
 
-    start_squat_button = tk.Button(button_frame, text="Start Squat Counter", font=("Helvetica", 12), bg=BUTTON_COLOR, fg=TEXT_COLOR, command=lambda: start_counter('squat', weight))
-    start_squat_button.grid(row=1, column=0, padx=10, pady=10)
+    X_test=np.zeros((len(healthycat)*5,9),dtype=np.float32)
+    for jj in range(len(healthycat)):
+        valloc=list(healthycat[jj])
+        valloc.append(agecl)
+        valloc.append(clbmi)
+        X_test[jj]=np.array(valloc)*ti
+    
+    
+    from sklearn.model_selection import train_test_split
+    
 
-    start_lunge_button = tk.Button(button_frame, text="Start Lunge Counter", font=("Helvetica", 12), bg=BUTTON_COLOR, fg=TEXT_COLOR, command=lambda: start_counter('lunge', weight))
-    start_lunge_button.grid(row=1, column=1, padx=10, pady=10)
+    val=int(USER_INP)
+    
+    if val==1:
+        X_train = healthycatfin
+        y_train=yt
+        
+    elif val==2:
+        X_train= healthycatfin
+        y_train=yt 
+        
+    elif val==3:
+        X_train= healthycatfin
+        y_train=ys
+        
+    
+    from sklearn.model_selection import train_test_split
+    
+    
+    from sklearn.ensemble import RandomForestClassifier
+    
+    clf=RandomForestClassifier(n_estimators=100)
+    
+    clf.fit(X_train,y_train)
+    
+    y_pred=clf.predict(X_test)
+    
+    print ('SUGGESTED FOOD ITEMS ::')
+    for ii in range(len(y_pred)):
+        if y_pred[ii]==2:
+            print (Food_itemsdata[ii])
 
-    # Diet Recommendation Button
-    diet_button = tk.Button(root, text="Get Diet Recommendation", font=("Helvetica", 12), bg=BUTTON_COLOR, fg=TEXT_COLOR, command=diet_recommendation)
-    diet_button.pack(pady=10)
+# Function to start exercise
+def start_exercise(exercise):
+    weight = float(e3.get())
+    start_counter(exercise, weight)
 
-    # Exit Button
-    exit_button = tk.Button(root, text="Exit", font=("Helvetica", 12), bg=BUTTON_COLOR, fg=TEXT_COLOR, command=root.quit)
-    exit_button.pack(pady=10)
+# Main window
+main_win = tk.Tk()
+main_win.title("Diet Recommendation System")
+main_win.geometry("800x600")
+main_win.configure(bg=BG_COLOR)
 
-    root.mainloop()
+# Title Label
+title_label = tk.Label(main_win, text="Diet Recommendation System", font=("Helvetica", 28, "bold"), fg=TEXT_COLOR, bg=BG_COLOR)
+title_label.pack(pady=20)
 
-if __name__ == "__main__":
-    main()
+# Input Fields
+input_frame = tk.Frame(main_win, bg=BG_COLOR)
+input_frame.pack(pady=20)
+
+Label(input_frame, text="Age", font='Helvetica 12 bold', bg=BG_COLOR, fg=TEXT_COLOR).grid(row=0, column=0, padx=10, pady=10)
+Label(input_frame, text="Weight (kg)", font='Helvetica 12 bold', bg=BG_COLOR, fg=TEXT_COLOR).grid(row=1, column=0, padx=10, pady=10)
+Label(input_frame, text="Height (m)", font='Helvetica 12 bold', bg=BG_COLOR, fg=TEXT_COLOR).grid(row=2, column=0, padx=10, pady=10)
+
+e1 = Entry(input_frame, font='Helvetica 12', bg="light grey")
+e3 = Entry(input_frame, font='Helvetica 12', bg="light grey")
+e4 = Entry(input_frame, font='Helvetica 12', bg="light grey")
+e1.grid(row=0, column=1, padx=10, pady=10)
+e3.grid(row=1, column=1, padx=10, pady=10)
+e4.grid(row=2, column=1, padx=10, pady=10)
+
+# Buttons
+button_frame = tk.Frame(main_win, bg=BG_COLOR)
+button_frame.pack(pady=20)
+
+Button(button_frame, text='Start Sit-up', font='Helvetica 12 bold', bg=BUTTON_COLOR, fg=TEXT_COLOR, command=lambda: start_exercise('situp')).grid(row=0, column=0, padx=10, pady=10)
+Button(button_frame, text='Start Push-up', font='Helvetica 12 bold', bg=BUTTON_COLOR, fg=TEXT_COLOR, command=lambda: start_exercise('pushup')).grid(row=0, column=1, padx=10, pady=10)
+Button(button_frame, text='Start Squat', font='Helvetica 12 bold', bg=BUTTON_COLOR, fg=TEXT_COLOR, command=lambda: start_exercise('squat')).grid(row=0, column=2, padx=10, pady=10)
+Button(button_frame, text='Start Curl', font='Helvetica 12 bold', bg=BUTTON_COLOR, fg=TEXT_COLOR, command=lambda: start_exercise('curl')).grid(row=0, column=3, padx=10, pady=10)
+
+Button(button_frame, text='Weight Loss', font='Helvetica 12 bold', bg=ACCENT_COLOR, fg=TEXT_COLOR, command=Weight_Loss).grid(row=1, column=0, padx=10, pady=10)
+Button(button_frame, text='Weight Gain', font='Helvetica 12 bold', bg=ACCENT_COLOR, fg=TEXT_COLOR, command=Weight_Gain).grid(row=1, column=1, padx=10, pady=10)
+Button(button_frame, text='Healthy', font='Helvetica 12 bold', bg=ACCENT_COLOR, fg=TEXT_COLOR, command=Healthy).grid(row=1, column=2, padx=10, pady=10)
+
+Button(button_frame, text='Quit', font='Helvetica 12 bold', bg=ACCENT_COLOR, fg=TEXT_COLOR, command=main_win.quit).grid(row=2, column=1, padx=10, pady=10)
+
+main_win.mainloop()
