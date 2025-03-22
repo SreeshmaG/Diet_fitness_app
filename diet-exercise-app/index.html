@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diet & Exercise Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1>Diet & Exercise Tracker</h1>
+
+    <!-- Exercise Tracker -->
+    <div class="exercise-tracker card">
+      <h2>Exercise Tracker</h2>
+      <label for="weight">Enter your weight (kg):</label>
+      <input type="number" id="weight" placeholder="e.g., 70">
+      <div class="buttons">
+        <button class="btn curl" onclick="startExercise('curl')">Start Bicep Curl</button>
+        <button class="btn situp" onclick="startExercise('situp')">Start Sit-Up</button>
+        <button class="btn squat" onclick="startExercise('squat')">Start Squat</button>
+        <button class="btn lunge" onclick="startExercise('lunge')">Start Lunge</button>
+      </div>
+      <div class="exercise-data">
+        <p>Counter: <span id="counter">0</span></p>
+        <p>Calories Burned: <span id="calories">0.00</span></p>
+      </div>
+    </div>
+
+    <!-- Diet Recommendation -->
+    <div class="diet-recommendation card">
+      <h2>Diet Recommendation</h2>
+      <button class="btn diet" onclick="getDietRecommendation()">Get Diet Recommendation</button>
+      <ul id="diet-list"></ul>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

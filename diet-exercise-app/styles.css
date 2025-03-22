@@ -1,0 +1,143 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
+  }
+  
+  .container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #555;
+  }
+  
+  /* Card Styles */
+  .card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  /* Input Styles */
+  label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #555;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  /* Button Styles */
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .btn {
+    flex: 1 1 calc(50% - 10px);
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .btn:hover {
+    opacity: 0.9;
+  }
+  
+  .btn.curl {
+    background: #ff6f61;
+    color: white;
+  }
+  
+  .btn.situp {
+    background: #6b5b95;
+    color: white;
+  }
+  
+  .btn.squat {
+    background: #88b04b;
+    color: white;
+  }
+  
+  .btn.lunge {
+    background: #ffa500;
+    color: white;
+  }
+  
+  .btn.diet {
+    background: #007bff;
+    color: white;
+    width: 100%;
+  }
+  
+  /* Exercise Data Styles */
+  .exercise-data {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  .exercise-data span {
+    font-weight: 600;
+    color: #007bff;
+  }
+  
+  /* Diet Recommendation Styles */
+  #diet-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 15px;
+  }
+  
+  #diet-list li {
+    background: #f4f4f4;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #555;
+    transition: transform 0.2s ease;
+  }
+  
+  #diet-list li:hover {
+    transform: translateX(5px);
+    background: #e0e0e0;
+  }
